@@ -20,6 +20,8 @@
       <div class="mt-4">
         <button @click="save" class="btn btn-primary">Save Settings</button>
       </div>
+      <div v-if="message" class="mt-2 text-green-600">{{ message }}</div>
+      <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
     </div>
   </div>
 </template>
@@ -29,13 +31,46 @@ export default {
   data() {
     return {
       modules: { inventory: true, attendance: true },
-      language: 'ne'
+      language: 'ne',
+      message: null,
+      error: null,
     }
+  },
+  mounted() {
+    // Load current settings from API
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.data) {
+          const s = data.data;
+          if (s.modules) this.modules = s.modules;
+          if (s.language) this.language = s.language;
+        }
+      }).catch(err => {
+        console.error('Failed to load settings', err);
+      });
   },
   methods: {
     save() {
-      // TODO: call API to persist settings
-      alert('Settings saved (placeholder)');
+      this.message = null;
+      this.error = null;
+      const payload = { settings: { modules: this.modules, language: this.language } };
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.data) {
+          this.message = 'Settings saved.';
+        } else if (data && data.error) {
+          this.error = data.error;
+        }
+      }).catch(err => {
+        this.error = 'Failed to save settings.';
+        console.error(err);
+      });
     }
   }
 }

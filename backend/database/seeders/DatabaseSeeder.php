@@ -6,12 +6,13 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\Setting;
+use App\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('users')->insert([
+        $adminId = DB::table('users')->insertGetId([
             'name' => 'Admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
@@ -45,5 +46,29 @@ class DatabaseSeeder extends Seeder
         Setting::updateOrCreate(['key' => 'language'], ['value' => 'ne']);
         Setting::updateOrCreate(['key' => 'date_system'], ['value' => 'bs']);
         Setting::updateOrCreate(['key' => 'invoice_paper_size'], ['value' => 'A4']);
+
+        // Roles
+        $roles = [
+            ['name' => 'Administrator', 'slug' => 'admin'],
+            ['name' => 'Cashier', 'slug' => 'cashier'],
+            ['name' => 'Inventory Manager', 'slug' => 'inventory'],
+            ['name' => 'HR', 'slug' => 'hr'],
+            ['name' => 'Accountant', 'slug' => 'accountant'],
+        ];
+
+        foreach ($roles as $r) {
+            Role::updateOrCreate(['slug' => $r['slug']], ['name' => $r['name']]);
+        }
+
+        // Attach admin role to admin user
+        $adminRole = Role::where('slug', 'admin')->first();
+        if ($adminRole) {
+            DB::table('role_user')->insert([
+                'role_id' => $adminRole->id,
+                'user_id' => $adminId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }
