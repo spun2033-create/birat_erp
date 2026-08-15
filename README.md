@@ -1,13 +1,20 @@
-# Birat ERP
+# Local setup notes
 
-यो रिपो Birat ERP (hardware पसल) को लागि हो।
+To finish the scaffold locally and run the application, follow these steps inside the `backend` folder:
 
-के भइरहेको छ:
-- हामीले initial scaffold र सिस्टम‑कन्फिगुरेसन सिर्जना गर्ने काम सुरु गर्दैछौँ।
-- Feature branch `feature/initial-scaffold` मा Laravel बेस्ड scaffold थप्ने तयारी छ।
+1. Install PHP and Composer.
+2. Run: composer install
+3. Install Node and npm, then run: npm install && npm run dev (if using Vite or Mix configured)
+4. Generate app key: php artisan key:generate
+5. Copy example env: cp .env.example .env and adjust DB credentials if needed.
+6. Run docker-compose up -d from repo root to start MySQL/nginx/php-fpm containers.
+7. Run migrations and seeders: php artisan migrate --seed
 
-अर्को कदमहरू (मैले branch बनायपछि):
-- Docker dev environment र SAR (scaffold) फाइलहरू 'feature/initial-scaffold' branch मा थप्नेछु।
-- त्यसपछि तपाइँले `docker-compose up` वा स्थानीय रूपमा Laravel चलाउन सक्नुहुनेछ (निर्देशन backend/README.md मा छ)।
+Optional (recommended): Install Laravel Breeze with Inertia + Vue3 locally:
 
-यदि यो ठीक छ भने, म अगाडि बढेर नयाँ ब्रान्चमा scaffold फाइलहरू पठाउँछु।
+composer require laravel/breeze --dev
+php artisan breeze:install inertia
+npm install
+npm run dev
+
+This project scaffold includes placeholders for Breeze and Inertia. Install the dependencies locally to enable authentication and full frontend behavior.

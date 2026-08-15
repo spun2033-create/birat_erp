@@ -1,13 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SettingsController;
 
 Route::get('/status', function () {
     return ['status' => 'ok'];
 });
 
 Route::prefix('api')->group(function () {
-    // Placeholder API endpoints
+    // Basic placeholder API endpoints
     Route::get('/products', fn() => ['data' => []]);
-    Route::get('/settings', fn() => ['data' => []]);
+
+    // Settings API
+    Route::get('/settings', [SettingsController::class, 'index']);
+    Route::post('/settings', [SettingsController::class, 'update']);
 });
