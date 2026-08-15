@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  app:
+    image: php:8.1-fpm
+    container_name: birat_app
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - birat_net
+  web:
+    image: nginx:stable-alpine
+    container_name: birat_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - birat_net
+  db:
+    image: mysql:8.0
+    container_name: birat_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: birat
+      MYSQL_USER: birat
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - birat_net
+volumes:
+  db_data:
+networks:
+  birat_net:

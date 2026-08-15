@@ -1,0 +1,8 @@
+{
+  "name": "spun2033/birat_erp",
+  "description": "Birat ERP - hardware पसल को लागि",
+  "require": {
+    "php": "^8.0",
+    "laravel/framework": "^9.0"
+  }
+}
